@@ -51,6 +51,8 @@ filterRE = re.compile(nonChat + r'(?:Quits|Joins|Parts)\:')
 
 nickChangeRE = re.compile(nonChat + r'(?P<from>[^ ]*) is now known as (?P<to>.*)')
 
+linkRE = re.compile("(https?://[^ \n]*)")
+
 def files():
 	result = {channel: {} for channel in app.config['CHANNELS']}
 	for f in os.listdir(app.config['LOG_PATH']):
@@ -97,6 +99,9 @@ def modifyLine(line, nickColors):
 	if nonChatRE.match(line):
 		line = "<span class='non-chat'>" + line + "</span>"
 	line = timeRE.sub(wrapTime, line)
+
+	#links
+	line = linkRE.sub(r"<a href='\1'>\1</a>", line)
 
 	#pretty printing
 	line = line.replace('\n', '<br />\n')
