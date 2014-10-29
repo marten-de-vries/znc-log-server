@@ -70,7 +70,7 @@ def index():
 @app.route('/<channel>/')
 def channel(**data):
 	try:
-		data['dates'] = files()[data['channel']]
+		data['dates'] = sorted(files()[data['channel']], reverse=True)
 	except KeyError:
 		flask.abort(404)
 	return flask.render_template('channel.html', **data)
