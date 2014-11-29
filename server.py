@@ -52,6 +52,7 @@ filterRE = re.compile(nonChat + r'(?:Quits|Joins|Parts)\:')
 nickChangeRE = re.compile(nonChat + r'(?P<from>[^ ]*) is now known as (?P<to>.*)')
 
 linkRE = re.compile("(https?://[^ \n]*)")
+emailRE = re.compile("(\S+)@([^\.]*)\.(\S+)")
 
 def files():
 	result = {channel: {} for channel in app.config['CHANNELS']}
@@ -102,6 +103,9 @@ def modifyLine(line, nickColors):
 
 	#links
 	line = linkRE.sub(r"<a href='\1'>\1</a>", line)
+
+	#emails
+	line = emailRE.sub(r"<script>document.write('\1')</script>@<script>document.write('\2')</script>.<script>document.write('\3')</script>", line)
 
 	#pretty printing
 	line = line.replace('\n', '<br />\n')
