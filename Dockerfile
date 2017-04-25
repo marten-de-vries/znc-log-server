@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add --no-cache uwsgi uwsgi-python3
+RUN apk add --no-cache uwsgi uwsgi-python3 py3-flask py3-jinja2
 ADD src /src
 WORKDIR /src
 RUN echo "import os; LOG_PATH = '/log'; CHANNELS = os.environ['CHANNELS'].split(';')" > config.py
