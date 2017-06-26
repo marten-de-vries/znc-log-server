@@ -1,2 +1,2 @@
-LOG_PATH = '/home/marten/.znc/moddata/log'
-CHANNELS = ['##PyTest']
+LOG_PATH = '/home/marten/Bureaublad/vps/old-vps-backup/znc-logs/'
+CHANNELS = ['##pytest']

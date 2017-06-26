@@ -25,6 +25,7 @@ import collections
 import colorsys
 import random
 import codecs
+import glob
 
 #Python 3 compatibility
 try:
@@ -34,9 +35,6 @@ except NameError:
 
 app = flask.Flask(__name__)
 app.config.from_object('config')
-
-channelsRE = '|'.join(re.escape(c) for c in app.config['CHANNELS'])
-fileRE = re.compile(r'[^_]*_[^_]*_(?P<channel>' + channelsRE + r')_(?P<date>[^\.]*)')
 
 time = r'\[\d\d:\d\d:\d\d\]'
 timeRE = re.compile(time)
@@ -56,12 +54,12 @@ emailRE = re.compile("(\S+)@([^\.]*)\.(\S+)")
 
 def files():
 	result = {channel: {} for channel in app.config['CHANNELS']}
-	for f in os.listdir(app.config['LOG_PATH']):
-		m = fileRE.match(f)
-		if m:
-			date = m.group('date')
-			date = date[:4] + "-" + date[4:6] + "-" + date[6:]
-			result[m.group('channel')][date] = f
+	for channelPath in glob.iglob(os.path.join(app.config['LOG_PATH'], '*', '*', '*')):
+		channel = os.path.basename(channelPath)
+		if channel in app.config['CHANNELS']:
+			for datePath in glob.glob(os.path.join(channelPath, '*')):
+				date = os.path.basename(datePath).split('.')[0]
+				result[channel][date] = datePath
 	return result
 
 @app.route('/')
@@ -102,7 +100,7 @@ def modifyLine(line, nickColors):
 	line = timeRE.sub(wrapTime, line)
 
 	#links
-	line = linkRE.sub(r"<a href='\1'>\1</a>", line)
+	line = linkRE.sub(r"<a rel='nofollow' href='\1'>\1</a>", line)
 
 	#emails
 	line = emailRE.sub(r"<script>document.write('\1')</script>@<script>document.write('\2')</script>.<script>document.write('\3')</script>", line)
