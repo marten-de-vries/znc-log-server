@@ -133,7 +133,7 @@ def nextColor():
 	#credits: http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
 	currentHue = (currentHue + GOLDEN_RATIO_CONJUGATE) % 1
 	r, g, b = colorsys.hsv_to_rgb(currentHue, 1, 0.5)
-	r, g, b = r * 255, g * 255, b * 255
+	r, g, b = int(round(r * 255)), int(round(g * 255)), int(round(b * 255))
 	return '#%02x%02x%02x' % (r, g, b)
 
 if __name__ == '__main__':
